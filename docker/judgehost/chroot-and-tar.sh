@@ -6,6 +6,7 @@ set -euo pipefail
 /opt/domjudge/judgehost/bin/dj_make_chroot
 
 /opt/domjudge/judgehost/bin/dj_run_chroot "apt update && apt install mono-mcs mono-devel"
+/opt/domjudge/judgehost/bin/dj_run_chroot "apt update && apt install nodejs"
 
 cd /
 echo "[..] Compressing chroot"
