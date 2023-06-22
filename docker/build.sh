@@ -2,9 +2,8 @@
 
 if [ "$#" -eq 0 ] || [ "$#" -gt 2 ]
 then
-	echo "Usage: $0 domjudge-version <namespace>"
+	echo "Usage: $0 domjudge-version"
 	echo "	For example: $0 5.3.0"
-	echo "	or: $0 5.3.0 otherNamespace"
 	exit 1
 fi
 
@@ -42,8 +41,8 @@ fi
 
 section_start "Variables"
 VERSION="$1"
-NAMESPACE="${2-domjudge}"
 URL=https://www.domjudge.org/releases/domjudge-${VERSION}.tar.gz
+URL=https://github.com/delta-cs/seminar-domjudge/archive/refs/tags/${VERSION}.tar.gz
 FILE=domjudge.tar.gz
 section_end
 
@@ -59,29 +58,29 @@ section_end
 
 section_start "Build domserver container"
 echo "[..] Building Docker image for domserver..."
-./build-domjudge.sh "${NAMESPACE}/domserver:${VERSION}"
+./build-domjudge.sh "deltacs/seminar-domserver:${VERSION}"
 echo "[ok] Done building Docker image for domserver"
 section_end
 
 section_start "Build judgehost container (with intermediate image)"
 echo "[..] Building Docker image for judgehost using intermediate build image..."
-./build-judgehost.sh "${NAMESPACE}/judgehost:${VERSION}"
+./build-judgehost.sh "deltacs/seminar-judgehost:${VERSION}"
 echo "[ok] Done building Docker image for judgehost"
 section_end
 
 section_start "Build judgehost container (judging chroot)"
 echo "[..] Building Docker image for judgehost chroot..."
-docker build -t "${NAMESPACE}/default-judgehost-chroot:${VERSION}" -f judgehost/Dockerfile.chroot .
+docker build -t "deltacs/seminar-default-judgehost-chroot:${VERSION}" -f judgehost/Dockerfile.chroot .
 echo "[ok] Done building Docker image for judgehost chroot"
 section_end
 
 section_start "Push instructions"
-echo "All done. Image ${NAMESPACE}/domserver:${VERSION} and ${NAMESPACE}/judgehost:${VERSION} created"
+echo "All done. Image deltacs/seminar-domserver:${VERSION} and deltacs/seminar-judgehost:${VERSION} created"
 echo "If you are a DOMjudge maintainer with access to the domjudge organization on Docker Hub, you can now run the following command to push them to Docker Hub:"
-echo "$ docker push ${NAMESPACE}/domserver:${VERSION} && docker push ${NAMESPACE}/judgehost:${VERSION} && docker push $NAMESPACE}/default-judgehost-chroot:${VERSION}"
+echo "$ docker push deltacs/seminar-domserver:${VERSION} && docker push deltacs/seminar-judgehost:${VERSION} && docker push deltacs/seminar-default-judgehost-chroot:${VERSION}"
 echo "If this is the latest release, also run the following command:"
-echo "$ docker tag ${NAMESPACE}/domserver:${VERSION} ${NAMESPACE}/domserver:latest && \
-docker tag ${NAMESPACE}/judgehost:${VERSION} ${NAMESPACE}/judgehost:latest && \
-docker tag ${NAMESPACE}/default-judgehost-chroot:${VERSION} ${NAMESPACE}/default-judgehost-chroot:latest && \
-docker push ${NAMESPACE}/domserver:latest && docker push ${NAMESPACE}/judgehost:latest && docker push ${NAMESPACE}/default-judgehost-chroot:latest"
+echo "$ docker tag deltacs/seminar-domserver:${VERSION} deltacs/seminar-domserver:latest && \
+docker tag deltacs/seminar-judgehost:${VERSION} deltacs/seminar-judgehost:latest && \
+docker tag deltacs/seminar-default-judgehost-chroot:${VERSION} deltacs/seminar-default-judgehost-chroot:latest && \
+docker push deltacs/seminar-domserver:latest && docker push deltacs/seminar-judgehost:latest && docker push deltacs/seminar-default-judgehost-chroot:latest"
 section_end

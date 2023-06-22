@@ -32,6 +32,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 # Add DOMjudge source code and build script
 ADD domjudge.tar.gz /domjudge-src
+RUN for directory in /domjudge-src/seminar-*; do mv -v "$directory" "/domjudge-src/${directory#*seminar-}"; done
 COPY domserver/build.sh /domjudge-src/build.sh
 
 # Build and install domserver
