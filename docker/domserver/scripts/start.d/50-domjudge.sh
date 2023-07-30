@@ -123,6 +123,7 @@ echo "real_ip_recursive on;" >> ${NGINX_CONFIG_FILE}
 
 # Set up permissions
 chown -R www-data: webapp/public/images
+chown -R www-data: webapp/public/media
 chown www-data: etc/dbpasswords.secret
 chown www-data: etc/restapi.secret
 if [[ -f etc/symfony_app.secret ]]
