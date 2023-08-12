@@ -1,0 +1,25 @@
+services:
+  judgehost-1: &judgehost
+    image: deltacs/seminar-judgehost:0.1.5
+    restart: always
+    security_opt:
+      - apparmor:unconfined
+    cap_add:
+      - CAP_SYS_ADMIN
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    environment: &judgehost-environment
+      CONTAINER_TIMEZONE: 'Europe/Prague'
+      JUDGEDAEMON_PASSWORD: '<judgedaemonpw>'
+      DAEMON_ID: 1
+
+  judgehost-2:
+    <<: *judgehost
+    environment:
+      <<: *judgehost-environment
+      DAEMON_ID: 2
+
+networks:
+  default:
+    name: pardubicky-hacker
+    external: true

@@ -1,0 +1,46 @@
+services:
+  domserver:
+    image: deltacs/seminar-domserver:0.1.5
+    networks:
+      - default
+      - proxy
+    volumes:
+      - media:/opt/domjudge/domserver/webapp/public/media
+    environment:
+      TRUSTED_PROXIES: '10.0.0.0/8'
+      CONTAINER_TIMEZONE: 'Europe/Prague'
+      MYSQL_HOST: 'database'
+      MYSQL_ROOT_PASSWORD: '<rootpw>'
+      MYSQL_DATABASE: 'domjudge'
+      MYSQL_USER: 'domjudge'
+      MYSQL_PASSWORD: '<userpw>'
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.pardubicky-hacker.rule=Host(`delta-soutez.zapotocnylubos.com`,`pardubicky-hacker.delta-skola.cz`)
+        - traefik.http.routers.pardubicky-hacker.entrypoints=websecure
+        - traefik.http.services.pardubicky-hacker.loadbalancer.server.port=80
+
+  database:
+    image: mysql:8.0.34
+    command: --max-connections=1000 --sql_mode="" --innodb-log-file-size=1G --max-allowed-packet=256M
+    cap_add:
+      - SYS_NICE
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: '<rootpw'
+      MYSQL_DATABASE: 'domjudge'
+      MYSQL_USER: 'domjudge'
+      MYSQL_PASSWORD: '<userpw>'
+
+volumes:
+  media:
+  mysql:
+
+networks:
+  default:
+    name: pardubicky-hacker
+    attachable: true
+  proxy:
+    external: true
