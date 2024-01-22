@@ -32,7 +32,12 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 # Add DOMjudge source code and build script
 ADD domjudge.tar.gz /domjudge-src
-RUN for directory in /domjudge-src/seminar-*; do mv -v "$directory" "/domjudge-src/${directory#*seminar-}"; done
+RUN if [ $(find /domjudge-src -maxdepth 1 -type d -name 'seminar-*' | wc -l) -gt 0 ]; then \
+    for directory in /domjudge-src/seminar-*; do mv -v "$directory" "/domjudge-src/domjudge"; done \
+  fi
+RUN if [ $(find /domjudge-src -maxdepth 1 -type d -name 'delta-cs-seminar-*' | wc -l) -gt 0 ]; then \
+    for directory in /domjudge-src/delta-cs-seminar-*; do mv -v "$directory" "/domjudge-src/domjudge"; done \
+  fi
 COPY domserver/build.sh /domjudge-src/build.sh
 
 # Build and install domserver
