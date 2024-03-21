@@ -7,6 +7,18 @@ set -euo pipefail
 
 /opt/domjudge/judgehost/bin/dj_run_chroot "apt update && apt install mono-mcs mono-devel"
 /opt/domjudge/judgehost/bin/dj_run_chroot "apt update && apt install nodejs"
+/opt/domjudge/judgehost/bin/dj_run_chroot "\
+  apt update \
+  && apt install wget \
+  && wget -O /tmp/dotnet-install.sh https://dot.net/v1/dotnet-install.sh \
+  && chmod +x /tmp/dotnet-install.sh \
+  && /tmp/dotnet-install.sh --channel 8.0 --install-dir /usr/lib/dotnet-8.0 \
+  && ln -s /usr/lib/dotnet-8.0/dotnet /usr/bin/dotnet-8.0 \
+  && ln -s /usr/bin/dotnet-8.0 /usr/bin/dotnet \
+  && dotnet --info --list-sdks \
+  && rm /tmp/dotnet-install.sh \
+  && apt remove wget \
+"
 
 cd /
 echo "[..] Compressing chroot"
