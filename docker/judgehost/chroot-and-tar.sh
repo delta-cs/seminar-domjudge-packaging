@@ -40,8 +40,6 @@ set -euo pipefail
 /opt/domjudge/judgehost/bin/dj_run_chroot "
   apt update \
   && apt install -y lua5.4 \
-  && ln -s /usr/bin/lua5.4 /usr/bin/lua \
-  && ln -s /usr/bin/luac5.4 /usr/bin/luac \
   && lua -v \
 "
 
