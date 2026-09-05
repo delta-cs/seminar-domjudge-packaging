@@ -49,6 +49,18 @@ set -euo pipefail
   && go version \
 "
 
+/opt/domjudge/judgehost/bin/dj_run_chroot "
+  apt update \
+  && apt install -y php-cli npm \
+  && php -v \
+"
+
+/opt/domjudge/judgehost/bin/dj_run_chroot "
+  apt update \
+  && npm install -g typescript \
+  && tsc -v \
+"
+
 cd /
 echo "[..] Compressing chroot"
 tar -czpf /chroot.tar.gz --exclude=/chroot/tmp --exclude=/chroot/proc --exclude=/chroot/sys --exclude=/chroot/mnt --exclude=/chroot/media --exclude=/chroot/dev --one-file-system /chroot
