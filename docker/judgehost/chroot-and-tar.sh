@@ -51,12 +51,13 @@ set -euo pipefail
 
 /opt/domjudge/judgehost/bin/dj_run_chroot "
   apt update \
-  && apt install -y php-cli npm \
+  && apt install -y php-cli \
   && php -v \
 "
 
 /opt/domjudge/judgehost/bin/dj_run_chroot "
   apt update \
+  && apt install -y npm \
   && npm install -g typescript \
   && tsc -v \
 "
